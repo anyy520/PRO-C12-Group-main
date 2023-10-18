@@ -1,65 +1,60 @@
-//Variáveis
-var trex, trexCorrendo;
-var chao, chaoImg, chaoInvisivel; //1
-var canvas;
-var velocidadeChao = -4;
-var gravidade = 0.9;
-var forcaPulo = -10;
-
-//carregar animações
-function preload(){ 
-  trexCorrendo = loadAnimation("t1.png","t3.png", "t4.png");
-  chaoImg = loadImage('ground2.png') //2
+var trex, trex_running;
+//1 variaveis chao
+//5variavel image  6 var invisivel
+var ground, groundImage,invisibleGround;
+function preload(){
+  trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
+  //5 imagem animaçao
+  groundImage = loadImage("ground2.png")
 }
 
 function setup() {
-  canvas = createCanvas(600, 200); //larg, alt
-  canvas.center();
-
+  createCanvas(600, 200);
+  
   //crie um sprite de trex
-  trex = createSprite(50,150,20,50);
-  trex.addAnimation("correndo", trexCorrendo);
-  //adicione dimensão ao trex
+  trex = createSprite(50,180,20,50);
+  trex.addAnimation("running", trex_running);
+  
+  //adicione dimensão e posição ao trex
   trex.scale = 0.5;
+  trex.x = 50
   
   //crie um sprite ground (solo)
-  chao = createSprite(300,170,600,20); //4 mudar o y
-  chao.addImage("chao", chaoImg); //3
-  chao.velocityX = velocidadeChao; //9 
+  ground = createSprite(200,180,500,20);
+ //4 add a imagem do solo
+ ground.addImage("ground",groundImage);
+ ground.x = ground.width /2;
 
-  //5 crie um chao invisivel para ver o colisor
-  chaoInvisivel = createSprite(300,195,600,20)
-  chaoInvisivel.visible = false; //8
 }
 
-function draw() {// desenhar
-  background(220); //fundo
-  drawSprites(); //desenha os sprite
-  frameRate(50)
-  // Verifica se o trex está no chão
-  var noChao = trex.collide(chaoInvisivel); //6 alterar para chaoInvisivel
+function draw() {
+  background(220);
+ //2 velocidade do solo
+ ground.velocityX = -4;
+ console.log(ground.X);
+ //9saber a posição atual do pulo
+  //console.log(trex.y);
 
-  // Se estiver no chão e a tecla de espaço for pressionada, aplique a força de pulo
-  if (noChao && keyDown("space")) {
-    trex.velocityY = forcaPulo;
-    console.log(trex.y)
-  }
 
-  // Aplica a gravidade apenas se não estiver no chão
-  if (!noChao) {
-    trex.velocityY += gravidade;
-    console.log(trex.y)
-  }
+ // 6atividade do aluno crie um chao invisivel
+ //8 ivisibilidade para o solo 
+ invisibleGround = createSprite(200,190,400,10); 
+ invisibleGround.visible = false; 
+  //pular quando a tecla espaço for pressionada
+  //10Use o operador && para verificar se as condições estão corretas:
 
-  console.log(chao.x)
-  //10
-  if (chao.x < 0){
-    chao.x = chao.width/2; 
-    console.log("x do chao" + chao.x)
-  }
+ if(keyDown("space") && trex.y >= 100) {
+  trex.velocityY = -10;
+}   
   
-  //impedir que o trex caia (por conta da gravidade)
-  trex.collide(chaoInvisivel); //7 alterar para chaoInvisivel
-  
-  //console.count("o draw é executado")
+  trex.velocityY = trex.velocityY + 0.9
+  //3continua o chao 
+  if (ground.x < 0) { 
+    ground.x = ground.width / 2;
+  }
+ //7fazer collidir com o solo invisivel
+trex.collide(invisibleGround);
+ //impedir que o trex caia 
+  // trex.collide(ground);
+  drawSprites();
 }
